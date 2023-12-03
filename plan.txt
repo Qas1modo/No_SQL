@@ -1,0 +1,99 @@
+## Project Specification for ArangoDB Project
+
+### 1. Project Overview and Technology Description
+
+**Goal**: Our project focuses on using ArangoDB, a NoSQL database, for handling and analyzing complex data.
+We plan to focus on its capabilities as a document database.
+
+**ArangoDB Overview**:
+- **Multi-Model**: ArangoDB can manage data as documents, key-value pairs, or graphs.
+- **Document Store**: ArangoDB is primarily a document database since all  its data is stored in JSON format and is pooled within collections.
+- **Key-Value Store**: Provides the characteristics of a modern, distributed key/value store. 
+- **Graph Database**: ArangoDB can also function as a graph database, which is ideal for understanding and analyzing the complex relationships in dataset.
+- **AQL (ArangoDB Query Language)**: AQL enables complex queries across different data models.
+
+### 2. Data to be Used
+
+**Yelp Open Dataset**:
+- Dataset of businesses, reviews and users associated with Yelp company https://www.yelp.com/dataset/.
+- **Relevance**: We chose this dataset for its complexity and realworld application. 
+- **Dataset Structure**: The dataset contains various JSON objects representing businesses, reviews, users, check-ins, and tips.
+- **Example object**: Tips written by a user on a business.
+```json
+{
+    "text": "Secret menu - fried chicken sando is da bombbbbbb Their zapatos are good too.",
+    "date": "2013-09-20",
+    "compliment_count": 172,
+    "business_id": "tnhfDv5Il8EaGSXZGiuQGg",
+    "user_id": "49JhAJh8vSQ-vM4Aourl0g"
+}
+```
+
+### 3. Types of Queries to be Executed
+
+For our project, we will focus on utilizing ArangoDB primarily as a document database. 
+Our queries will be desinged to interact with the Yelp Open Dataset. 
+
+#### Specific Operations:
+
+1. **Inserting Data**:
+   - `collection.insert(data)`: 
+   - Example: Inserting a new business into the `business` collection.
+
+2. **Querying by Example**:
+   - `collection.byExample(example)`:
+   - Example: Finding all businesses in a specific city or with a certain star rating.
+
+3. **Removing Data**:
+   - `collection.remove(object)`:
+   - Example: Removing a business that has permanently closed.
+
+#### AQL Queries for the Yelp Dataset:
+
+1. **Find Top Rated Businesses in a City**:
+   ```aql
+   FOR business IN businesses
+     FILTER business.city == 'San Francisco' AND business.stars >= 4.5
+     RETURN business
+   ```
+
+2. **Aggregate Average Stars per Business Category**:
+   ```aql
+   FOR business IN businesses
+     COLLECT category = business.categories INTO group
+     RETURN {
+       category,
+       averageStars: AVERAGE(group[*].business.stars)
+     }
+   ```
+
+3. **Find Businesses with Specific Attributes**:
+   ```aql
+   FOR business IN businesses
+     FILTER business.attributes.RestaurantsTakeOut == true AND business.attributes.BusinessParking.street == true
+     RETURN business
+   ```
+
+### 4. Performance Measures to Compare
+
+To evaluate the performance of ArangoDB, we will compare it against MongoDB, which is the most standard document databases. 
+This comparison will involve running benchmarks on both databases using equivalent queries on the Yelp dataset. 
+We will focus on following key metrics:
+
+#### Comparative Performance Metrics:
+
+1. **Query Execution Time**:
+   - Measure and compare the time taken to execute equivalent queries in both ArangoDB and MongoDB.
+   - Example: Comparing the time to fetch top-rated businesses in a specific city.
+
+2. **Data Throughput**:
+   - Evaluate how much data each database can handle within a set time frame.
+   - Example: Inserting a large number of documents and measuring the time taken by each database.
+
+3. **Response Time for CRUD Operations**:
+   - Compare the response time for Create, Read, Update, and Delete operations between ArangoDB and MongoDB.
+   - Example: Timing how long it takes to update a set of documents in both databases.
+
+5. **Indexing Efficiency**:
+   - Test and compare how quickly each database can index large datasets and how this impacts overall query performance.
+   - Example: Measuring the time taken to create and utilize indexes for text search queries.

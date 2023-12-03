@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  arangodb:
+    image: arangodb
+    ports:
+      - "8529:8529"
+    environment:
+      - ARANGO_ROOT_PASSWORD=my_password
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+    volumes:
+      - arangodb_data:/var/lib/arangodb3
+      - ./yelp_dataset:/tmp/yelp_dataset
+volumes:
+  arangodb_data:

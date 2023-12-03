@@ -1,0 +1,16 @@
+{
+  "name": "pa195-arangodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "setup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "arangojs": "^8.6.0",
+    "mongodb": "^6.3.0",
+    "performance-now": "^2.1.0"
+  }
+}
