@@ -113,7 +113,7 @@ async function runBenchmarks() {
       `,
     },
     {
-      name: 'Inverted index postal_code',
+      name: 'Inverted index postal_code prefix',
       aql: aql`
         FOR business IN business
           FILTER business.postal_code LIKE '94%'
