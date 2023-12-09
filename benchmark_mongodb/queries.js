@@ -19,14 +19,14 @@ async function executeQuery(collection, query) {
   return end - start;
 }
 
-async function benchmarkQuery(collection, query, repetitions = 10) {
+async function benchmarkQuery(collection, query, repetitions = 3) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
+    console.log(`Progress: ${i + 1}/${repetitions}`);
     const timeTaken = await executeQuery(collection, query);
     totalExecutionTime += timeTaken;
   }
-
   return totalExecutionTime / repetitions; // Average time
 }
 
@@ -70,26 +70,53 @@ async function runBenchmarks() {
     }
   ];
 
+  const indexQueries = [
+    {
+      name: 'Exact match city',
+      query: { city: 'San Francisco'},
+    },
+    {
+      name: 'Prefix query',
+      query: { city: '/^San/'},
+    },
+    {
+      name: 'Range query integer',
+      query: { review_count: { AND: { $gt: 1000, $lt: 2000 }}},
+    },
+    {
+      name: 'Wildcard query',
+      query: { city: '/ran/'},
+    },
+    {
+      name: 'Persistent index range float',
+      query: { longitude: { $lt: 0 }},
+    },
+    {
+      name: 'Inverted index postal_code prefix',
+      query: { postal_code: '/^49/' },
+    },
+  ];
+
   const results = [['database', 'query_name', 'avg_time']];
 
 
-  console.log("Creating index");
+  //console.log("Creating index");
   // Create text index for text search on the 'city' field
-  await businessCollection.createIndex({ city: "text" });
+  //await businessCollection.createIndex({ city: "text" });
 
-  for (let query of queries) {
+  for (let query of indexQueries) {
     let collection = businessCollection; // Default to business collection
     if (query.name === 'Join Businesses and Reviews') {
       // Adjust if a different collection is needed
       collection = businessCollection;
     }
-
+    console.log(`Running: ${query.name}`);
     const averageTime = await benchmarkQuery(collection, query.query);
     results.push(['mongodb', query.name, averageTime.toFixed(2)]);
   }
 
   // Drop the text index after benchmarking
-  await businessCollection.dropIndex("city_text");
+  //await businessCollection.dropIndex("city_text");
 
   const csvContent = results.map(e => e.join(',')).join('\n');
   fs.writeFileSync(path.join(__dirname, 'queries.csv'), csvContent);

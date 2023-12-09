@@ -17,10 +17,11 @@ async function executeQuery(query) {
   return end - start;
 }
 
-async function benchmarkQuery(query, repetitions = 10) {
+async function benchmarkQuery(query, repetitions = 1) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
+    console.log(`Progress: ${i + 1}/${repetitions}`);
     const timeTaken = await executeQuery(query);
     totalExecutionTime += timeTaken;
   }
@@ -70,27 +71,78 @@ async function runBenchmarks() {
     }
   ];
 
+  const indexQueries = [
+    {
+      name: 'Exact match city',
+      aql: aql`
+        FOR business IN business
+          FILTER business.city == 'San Francisco'
+          RETURN business
+      `,
+    },
+    {
+      name: 'Prefix query',
+      aql: aql`
+        FOR business IN business
+          FILTER business.city LIKE 'San%'
+          RETURN business
+      `,
+    },
+    {
+      name: 'Range query integer',
+      aql: aql`
+        FOR business IN business
+          FILTER business.review_count > 1000 && business.review_count < 2000
+          RETURN business
+      `,
+    },
+    {
+      name: 'Wildcard query',
+      aql: aql`
+        FOR business IN business
+          FILTER business.city LIKE '%ran%'
+          RETURN business
+      `,
+    },
+    {
+      name: 'Persistent index range float',
+      aql: aql`
+        FOR business IN business
+          FILTER business.longitude < 0
+          RETURN business
+      `,
+    },
+    {
+      name: 'Inverted index postal_code',
+      aql: aql`
+        FOR business IN business
+          FILTER business.postal_code LIKE '94%'
+          RETURN business
+      `,
+    },
+  ];
+
   const results = [['database', 'query_name', 'avg_time']];
 
   const businessCollection = db.collection('business');
 
-  console.log("Creating index")
+  //console.log("Creating index")
   // Create index for text search
-  const index = await businessCollection.ensureIndex({
-    type: 'fulltext',
-    fields: ['city'],
-    minLength: 2
-  });
+  //  const index = await businessCollection.ensureIndex({
+  //  type: 'fulltext',
+  //  fields: ['city'],
+  //  minLength: 2
+  //});
 
-  for (let query of queries) {
+  for (let query of indexQueries) {
     console.log(`Running: ${query.name}`);
     const averageTime = await benchmarkQuery(query.aql);
     results.push(['arangodb', query.name, averageTime.toFixed(2)]);
   }
 
-  if (index.id) {
-    await businessCollection.dropIndex(index.id);
-  }
+  //if (index.id) {
+  // await businessCollection.dropIndex(index.id);
+  //}
 
   const csvContent = results.map(e => e.join(',')).join('\n');
   fs.writeFileSync(path.join(__dirname, 'queries.csv'), csvContent);

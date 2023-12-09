@@ -21,7 +21,7 @@ colors = {"mongodb": "green", "arangodb": "yellow"}
 
 plt.figure(figsize=(10, 6))
 sns.barplot(x="query_name", y="avg_time", hue="database", data=df_union, palette=colors)
-
+plt.yscale('log')
 plt.title("Average Time of Queries by Database")
 plt.xlabel("Query Name")
 plt.ylabel("Average Time (ms)")
