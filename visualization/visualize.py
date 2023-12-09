@@ -20,7 +20,7 @@ df_union.head()
 colors = {"mongodb": "green", "arangodb": "yellow"}
 
 plt.figure(figsize=(10, 6))
-sns.barplot(x="query_name", y="avg_time", hue="database", data=df_union, palette=colors)
+ax = sns.barplot(x="query_name", y="avg_time", hue="database", data=df_union, palette=colors)
 plt.yscale('log')
 plt.title("Average Time of Queries by Database")
 plt.xlabel("Query Name")
@@ -28,6 +28,9 @@ plt.ylabel("Average Time (ms)")
 plt.xticks(rotation=45)
 plt.legend(title='Database')
 plt.tight_layout()
+
+for i in ax.containers:
+    ax.bar_label(i,)
 
 # Display the updated plot with specific colors
 file_path = './queries_comparison_chart.png'
