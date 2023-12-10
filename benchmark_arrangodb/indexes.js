@@ -24,7 +24,7 @@ async function measureTime (type, fields, i, repetitions) {
   return end - start;
 }
 
-async function benchmarkQuery(type, fields, repetitions = 1) {
+async function benchmarkQuery(type, fields, repetitions = 5) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
@@ -52,24 +52,19 @@ async function dropIndexes() {
 async function createIndexes() {
 
   let indexes = [{
-    name:"Persistent index city",
+    name:"Persistent index string",
     type: "persistent",
     fields: ["city"]
   },
   {
-    name:"Persistent index review_count",
+    name:"Persistent index integer",
     type: "persistent",
     fields: ["review_count"]
   },
   {
-    name:"Persistent index longitude",
+    name:"Persistent index float",
     type: "persistent",
     fields: ["longitude"]
-  },
-  {
-    name:"Persistent index postal_code",
-    type: "persistent",
-    fields: ["postal_code"]
   }];
   await dropIndexes();
   const results = [['database', 'query_name', 'avg_time']];

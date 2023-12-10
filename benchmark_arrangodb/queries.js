@@ -17,7 +17,7 @@ async function executeQuery(query) {
   return end - start;
 }
 
-async function benchmarkQuery(query, repetitions = 1) {
+async function benchmarkQuery(query, repetitions = 10) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
@@ -73,7 +73,7 @@ async function runBenchmarks() {
 
   const indexQueries = [
     {
-      name: 'Exact match city',
+      name: 'Exact match string',
       aql: aql`
         FOR business IN business
           FILTER business.city == 'San Francisco'
@@ -81,7 +81,7 @@ async function runBenchmarks() {
       `,
     },
     {
-      name: 'Prefix query',
+      name: 'Prefix query string',
       aql: aql`
         FOR business IN business
           FILTER business.city LIKE 'San%'
@@ -105,21 +105,21 @@ async function runBenchmarks() {
       `,
     },
     {
-      name: 'Persistent index range float',
+      name: 'Exact query float',
+      aql: aql`
+        FOR business IN business
+          FILTER business.longitude == -122.39612197
+          RETURN business
+      `,
+    },
+    {
+      name: 'Range query float',
       aql: aql`
         FOR business IN business
           FILTER business.longitude < 0
           RETURN business
       `,
-    },
-    {
-      name: 'Inverted index postal_code prefix',
-      aql: aql`
-        FOR business IN business
-          FILTER business.postal_code LIKE '94%'
-          RETURN business
-      `,
-    },
+    }
   ];
 
   const results = [['database', 'query_name', 'avg_time']];

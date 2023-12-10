@@ -19,7 +19,7 @@ async function executeQuery(collection, query) {
   return end - start;
 }
 
-async function benchmarkQuery(collection, query, repetitions = 3) {
+async function benchmarkQuery(collection, query, repetitions = 10) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
@@ -72,11 +72,11 @@ async function runBenchmarks() {
 
   const indexQueries = [
     {
-      name: 'Exact match city',
+      name: 'Exact match string',
       query: { city: 'San Francisco'},
     },
     {
-      name: 'Prefix query',
+      name: 'Prefix query string',
       query: { city: '/^San/'},
     },
     {
@@ -88,12 +88,12 @@ async function runBenchmarks() {
       query: { city: '/ran/'},
     },
     {
-      name: 'Persistent index range float',
-      query: { longitude: { $lt: 0 }},
+      name: 'Exact query float',
+      query: { longitude: -122.39612197 },
     },
     {
-      name: 'Inverted index postal_code prefix',
-      query: { postal_code: '/^49/' },
+      name: 'Range query float',
+      query: { longitude: { $lt: 0 }},
     },
   ];
 

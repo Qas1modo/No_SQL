@@ -14,7 +14,7 @@ async function executeQuery(collection, field, order) {
     return end - start;
 }
 
-async function benchmarkQuery(collection, field, order, repetitions = 1) {
+async function benchmarkQuery(collection, field, order, repetitions = 5) {
   let totalExecutionTime = 0;
 
   for (let i = 0; i < repetitions; i++) {
@@ -36,25 +36,20 @@ async function createIndexes() {
   
   const results = [['database', 'query_name', 'avg_time']];
   let indexes = [{
-        name:"Persistent index city",
+        name:"Persistent index string",
         field: "city",
         order: 1
     },
     {
-        name:"Persistent index review_count",
+        name:"Persistent index integer",
         field: "review_count",
         order: 1
     },
     {
-        name:"Persistent index longitude",
+        name:"Persistent index float",
         field: "longitude",
         order: 1
-    },
-    {
-        name:"Persistent index postal_code",
-        field: "postal_code",
-        order: 1
-    },
+    }
   ];
   await businessCollection.dropIndexes();
   for (let index of indexes) {
@@ -79,6 +74,7 @@ async function deleteIndexes() {
     const businessCollection = db.collection('business');
     const reviewCollection = db.collection('review');
     await businessCollection.dropIndexes();
+    console.log("done")
   }
 
 //deleteIndexes();
