@@ -22,6 +22,7 @@ try {
     createCollection('review');
     createCollection('user');
     createCollection('tip');
+    createCollection('passwords');
     console.log("Collections created!");
 } catch (e) {
     console.error(`Failed to create collections ${e}`)

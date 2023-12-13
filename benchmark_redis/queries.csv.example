@@ -1,0 +1,4 @@
+database,repetitions,avg_time
+redis,1,
+redis,10,
+redis,1000,

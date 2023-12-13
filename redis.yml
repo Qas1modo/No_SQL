@@ -1,19 +1,17 @@
 version: '3.8'
 services:
   arangodb:
-    image: arangodb
+    image: "redis:7.2.3"
     ports:
-      - "8529:8529"
+      - "6379:6379"
     environment:
-      - ARANGO_ROOT_PASSWORD=my_password
     deploy:
       resources:
         limits:
           cpus: '2.0'
           memory: 4G
     volumes:
-      - arangodb_data:/var/lib/arangodb3
+      - redis_data:/var/lib/redis
       - ./yelp_dataset:/tmp/yelp_dataset
-      - ./key_value_dataset:/tmp/kv_dataset
 volumes:
-  arangodb_data:
+  redis_data:

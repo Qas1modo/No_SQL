@@ -11,6 +11,7 @@
   "dependencies": {
     "arangojs": "^8.6.0",
     "mongodb": "^6.3.0",
-    "performance-now": "^2.1.0"
+    "performance-now": "^2.1.0",
+    "redis": "^4.6.11"
   }
 }
